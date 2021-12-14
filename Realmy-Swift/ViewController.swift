@@ -16,16 +16,15 @@ class User: Object {
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var infoLbl: UILabel!
+    @IBOutlet weak var segmentControl: UISegmentedControl!
+    
     // Realm denetleyicisini tanımlayın
     let realm = try! Realm()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //addDB()
-        getDB()
-        //deleteDB()
-        
+                
     }
     
     //  Veritabanına ekle
@@ -38,7 +37,7 @@ class ViewController: UIViewController {
         
         try! realm.write {
             realm.add( dbUser )
-            print("db insert successfull")
+            infoLbl.text = "Database INSERTED"
         }
         
     }
@@ -53,16 +52,36 @@ class ViewController: UIViewController {
             print( "userId --- \( item.userId )")
             print( "name ----- \( item.name ) \n")
         }
-        
+        infoLbl.text = "Database SELECTED"
+
     }
     
     //  Veritabanından sil
     
     func deleteDB () {
         
-        let userDB = realm.objects( User.self )
-        realm.delete( userDB )
+    
+        let userDB = realm.objects(User.self)
+        
+        try! realm.write {
+            realm.delete(userDB)
+        }
+        infoLbl.text = "Database DELETED"
 
+    }
+    
+    @IBAction func indexChanged(_ sender: Any) {
+        switch segmentControl.selectedSegmentIndex
+        {
+        case 0:
+            addDB()
+        case 1:
+            getDB()
+        case 2:
+            deleteDB()
+        default:
+            break
+        }
     }
 
 }
